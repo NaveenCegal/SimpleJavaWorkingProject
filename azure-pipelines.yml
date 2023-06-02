@@ -22,7 +22,8 @@ steps:
 - task: Docker@2
   inputs:
     command: 'login'
-    arguments: '-u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD) my-local-docker-registry'
+    arguments: '-u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD) LocalDockerRegistry'
+
 - task: Maven@3
   displayName: 'Maven Build'
   inputs:
@@ -32,5 +33,9 @@ steps:
 - task: Maven@3
   displayName: 'Jib Image Build'
   inputs:
-    mavenPomFile: 'pom.xml'  # Path to your Maven project's pom.xml file
-    goals: 'com.google.cloud.tools:jib-maven-plugin:3.1.4:build'  # Jib plugin goal to execute
+    mavenPomFile: 'pom.xml'
+    goals: 'com.google.cloud.tools:jib-maven-plugin:3.1.4:build'
+    options: '-Djib.to.image=docker.io/naveen538/naveensamplejavaazure -Djib.auth.username=$(DOCKER_USERNAME) -Djib.auth.password=$(DOCKER_PASSWORD)'
+  env:
+    DOCKER_USERNAME: $(LocalDockerRegistry.username)  # Replace 'LocalDockerRegistry' with your Docker service connection name
+    DOCKER_PASSWORD: $(LocalDockerRegistry.password)
