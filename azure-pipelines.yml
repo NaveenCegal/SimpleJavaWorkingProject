@@ -18,14 +18,6 @@ steps:
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
 
-- task: GitClone@2
-  inputs:
-    RepositoryURL: 'https://github.com/NaveenCegal/SimpleJavaWorkingProject.git'
-    Branch: 'main'
-    FallbackBranch: 'main'
-    BaseBranch: 'main'
-
-
 
 - task: Maven@3
   displayName: 'Maven Build'
