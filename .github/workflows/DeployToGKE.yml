@@ -1,0 +1,71 @@
+name: Deploy to GKE
+run-name: ${{ github.actor }} is running Deploy of microservice to GKE
+
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      deployment-env:
+        description: 'Deployment environment'
+        required: false
+        default: 'dev'
+        type: environment
+      release:
+        description: 'Release'
+        required: true
+        default: true
+        type: boolean
+      release-tag:
+        description: 'Release Tag (latest if not entered)'
+        required: false
+        type: string
+      gke-name:
+        description: 'GKE Cluster Name'
+        required: false
+        default: 'cip-kubernetes-dev-cluster'
+        type: string
+      gke-zone:
+        description: 'GKE Cluster Zone'
+        required: false
+        default: 'europe-north1-a'
+        type: string
+
+env:
+  GAR_LOCATION: europe-north1-docker
+  IMAGE_LOCATION: cip-shared-services/cip
+  IMAGE: java-gke-test-naveen
+
+jobs:
+  env-vars-setup:
+    name: Sets up environment variables as outputs for use in next job calling dependent workflows
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: set outputs with default values
+        id: set-env-vars
+        run: |
+          echo "image=${{ env.IMAGE }}" >> $GITHUB_OUTPUT
+          echo "gar-location=${{ env.GAR_LOCATION }}" >> $GITHUB_OUTPUT
+          echo "full-image=${{ env.GAR_LOCATION }}.pkg.dev/${{ env.IMAGE_LOCATION  }}/${{ env.IMAGE  }}" >> $GITHUB_OUTPUT
+          
+    outputs:
+      image: ${{ steps.set-env-vars.outputs.image }}
+      gar-location: ${{ steps.set-env-vars.outputs.gar-location }}
+      full-image: ${{ steps.set-env-vars.outputs.full-image }}
+      
+
+
+  call-gke-deployment:
+    needs: env-vars-setup
+    name: Calls workflow for deploying to GKE
+    uses: Central-Integration-Platform/CIP-CiCd-Pipeline/.github/workflows/gke-deploy.yml@main
+    with:
+      environment: ${{inputs.deployment-env}}
+      release: ${{inputs.release}}
+      release-tag: ${{inputs.release-tag}}
+      image: ${{needs.env-vars-setup.outputs.image}}
+      cluster: ${{inputs.gke-name}}
+      zone: ${{inputs.gke-zone}}
+      gar-location: ${{needs.env-vars-setup.outputs.gar-location}}
+      full-image: ${{needs.env-vars-setup.outputs.full-image}}
+    secrets: inherit

@@ -1,0 +1,16 @@
+name: create-documentation
+run-name:  ${{ github.actor }} is creating documentation
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  call-swagerdoc-creation:
+    name: Calls workflow for creating swager doc in Central-Integration-Platform.github.io repository
+    uses: Central-Integration-Platform/CIP-CiCd-Pipeline/.github/workflows/document-creation.yml@main
+    with:
+      swagger-url: 'https://dev.cip.sysco.no/nordpool/api-docs'
+      service-name: 'java-gke-test-naveen'
+    secrets: inherit

@@ -1,0 +1,15 @@
+name: Build and test PR
+run-name: ${{ github.actor }} is running Build and Test on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  call-java-pr:
+    name: Calls workflow for Java PR lint, build and test
+    uses: Central-Integration-Platform/CIP-CiCd-Pipeline/.github/workflows/java-pr.yml@main
+    with:
+      language: 'Java'
+      version: '17'

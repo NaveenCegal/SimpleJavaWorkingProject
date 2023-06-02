@@ -1,0 +1,50 @@
+name: Deploy to CloudRun
+run-name: ${{ github.actor }} is running Deploy of microservice to CloudRun
+
+on:
+  workflow_run:
+    workflows: [ "Build and Deploy main branch to GKE" ]
+    branches: [ main ]
+    types:
+      - completed
+
+jobs:
+  call-cloudrun-deployment-dev:
+    name: Calls workflow for deploying to CloudRun in Dev
+    uses: Central-Integration-Platform/CIP-CiCd-Pipeline/.github/workflows/cloudrun-deploy.yml@main
+    with:
+      environment: dev
+      release: false
+      region: 'europe-north1'
+      image: ' java-gke-test-naveen'
+      container-port: '8087'
+      full-image: 'europe-north1-docker.pkg.dev/cip-shared-services/cip/java-gke-test-naveen'
+    secrets: inherit
+    
+  call-cloudrun-deployment-test:
+    needs: call-cloudrun-deployment-dev
+    name: Calls workflow for deploying to GKE in Test
+    uses: Central-Integration-Platform/CIP-CiCd-Pipeline/.github/workflows/gke-deploy.yml@gke-deploy-test
+    with:
+      environment: test
+      release: false
+      zone: 'europe-north1-b'
+      cluster: 'cip-kubernetes-test-cluster'
+      gar-location: 'europe-north1-docker'
+      image: 'java-gke-test-naveen'
+      full-image: 'europe-north1-docker.pkg.dev/cip-shared-services/cip/java-gke-test-naveen'
+    secrets: inherit
+ 
+  call-cloudrun-deployment-prod:
+    needs: call-cloudrun-deployment-test
+    name: Calls workflow for deploying to GKE in prod
+    uses: Central-Integration-Platform/CIP-CiCd-Pipeline/.github/workflows/gke-deploy.yml@gke-deploy-test
+    with:
+      environment: prod
+      release: true
+      zone: 'europe-north1-a'
+      cluster: 'cip-kubernetes-prod-cluster'
+      gar-location: 'europe-north1-docker'
+      image: 'java-gke-test-naveen'
+      full-image: 'europe-north1-docker.pkg.dev/cip-shared-services/cip/java-gke-test-naveen'
+    secrets: inherit

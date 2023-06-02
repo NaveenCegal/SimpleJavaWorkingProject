@@ -1,0 +1,54 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: __IMAGE__-service
+spec:
+  template:
+    metadata:
+      name: __IMAGE__-service-__REVISION__
+    spec:
+      containers:
+        - image: __FULL_IMAGE__
+          ports:
+          - name: http1
+            containerPort: __CONTAINER_PORT__
+#          env:
+#          - name: DATABASE_CLOUD_SQL_CONNECTION
+#            valueFrom:
+#              secretKeyRef:
+#                key: latest
+#                name: DATABASE_CLOUD_SQL_CONNECTION
+#          - name: DATABASE_HOST
+#            valueFrom:
+#              secretKeyRef:
+#                key: latest
+#                name: DATABASE_HOST
+#          - name: DATABASE_PORT
+#            valueFrom:
+#              secretKeyRef:
+#                key: latest
+#                name: DATABASE_PORT
+#          - name: DATABASE_SCHEMA
+#            valueFrom:
+#              secretKeyRef:
+#                key: latest
+#                name: DATABASE_SCHEMA
+#          - name: DATABASE_USER
+#            valueFrom:
+#              secretKeyRef:
+#                key: latest
+#                name: DATABASE_USER
+#          - name: DATABASE_PASS
+#            valueFrom:
+#              secretKeyRef:
+#                key: latest
+#                name: DATABASE_PASS
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+  traffic:
+  - percent: 100
+    latestRevision: true
+  - revisionName: __IMAGE__-service-__REVISION__
+    tag: __REVISION__

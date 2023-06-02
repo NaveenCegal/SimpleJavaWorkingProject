@@ -1,0 +1,7 @@
+server:
+  port: 8080
+springdoc:
+  swagger-ui.path: /testapp/swagger
+  api-docs.path: /testapp/api-docs
+  packagesToScan: com.example.helloworld.controller
+  pathsToMatch: /**

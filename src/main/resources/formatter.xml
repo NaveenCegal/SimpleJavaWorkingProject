@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<profiles>
+    <profile name="myProfile">
+        <settings version="12.0">
+            <setting id="org.eclipse.jdt.core.formatter.tabulation.char" value="space"/>
+            <setting id="org.eclipse.jdt.core.formatter.tabulation.size" value="4"/>
+            <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="120"/>
+        </settings>
+    </profile>
+</profiles>

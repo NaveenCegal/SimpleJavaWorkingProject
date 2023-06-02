@@ -1,0 +1,30 @@
+name: Create Documentaion and place in Central-Integration-Platform.github.io Repository
+
+on:
+  push:
+    branches:
+      - mai1n
+
+jobs:
+  Create-Documentation :
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code from Central-Integration-Platform.github.io repository
+        uses: actions/checkout@v2
+        with:
+          repository: Central-Integration-Platform/Central-Integration-Platform.github.io
+          ref: main
+          token: ${{ secrets.MY_PAT }}
+
+#      -u "myusername:myp@ssword"
+      - name: Download file
+        run: curl -s -S -L -o NaveenTestApp/api-docs.json https://dev.cip.sysco.no/nordpool/api-docs.json
+
+      - name: Commit changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add NaveenTestApp/api-docs.json
+          git commit -m "Adding api-docs.json"
+          git push -u origin main

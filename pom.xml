@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.5.6</version>
+    <relativePath></relativePath>
+    <!-- lookup parent from repository -->
+  </parent>
+  <groupId>com.cegal.cip</groupId>
+  <artifactId>nordpoolservices</artifactId>
+  <version>0.1</version>
+  <packaging>jar</packaging>
+  <name>nordpoolservices-api</name>
+  <description>REST API for Nordpool Services</description>
+  <properties>
+    <gson.version>2.9.1</gson.version>
+    <hikari.cp.version>5.0.1</hikari.cp.version>
+    <java.version>16</java.version>
+    <log4j.version>2.19.0</log4j.version>
+    <lombok.version>1.18.24</lombok.version>
+    <openapi.version>1.6.14</openapi.version>
+    <postgresql.version>42.5.1</postgresql.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-cache</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-api</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-slf4j2-impl</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-core</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-layout-template-json</artifactId>
+      <version>${log4j.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.logging.log4j</groupId>
+      <artifactId>log4j-jul</artifactId>
+      <version>${log4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>${hikari.cp.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!--        <dependency>-->
+    <!--            <groupId>com.google.cloud.sql</groupId>-->
+    <!--            <artifactId>postgres-socket-factory</artifactId>-->
+    <!--            <version>1.4.1</version>-->
+    <!--        </dependency>-->
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springdoc</groupId>
+        <artifactId>springdoc-openapi-maven-plugin</artifactId>
+        <version>1.4</version>
+        <configuration>
+          <apiDocsUrl>http://localhost:8080/nordpool/api-docs</apiDocsUrl>
+        </configuration>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>jib-maven-plugin</artifactId>
+        <version>3.1.4</version>
+        <configuration>
+          <from>
+            <image>amazoncorretto:16</image>
+          </from>
+          <to>
+            <image>cipnordpool</image>
+            <tags>
+              <tag>latest</tag>
+              <tag>r_${project.version}</tag>
+            </tags>
+          </to>
+          <container>
+            <ports>
+              <port>8080</port>
+              <port>8888</port>
+            </ports>
+            <volumes>/mnt/logs</volumes>
+            <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+          </container>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>2.36.0</version>
+        <executions>
+          <execution>
+            <id>format</id>
+            <goals>
+              <goal>apply</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <pom>
+                <includes>
+                  <include>pom.xml</include>
+                </includes>
+                <sortPom>
+                  <sortProperties>true</sortProperties>
+                </sortPom>
+              </pom>
+              <java>
+                <includes>
+                  <include>src/main/java/**/*.java</include>
+                </includes>
+                <importOrder></importOrder>
+                <removeUnusedImports></removeUnusedImports>
+                <trimTrailingWhitespace></trimTrailingWhitespace>
+                <endWithNewline></endWithNewline>
+                <googleJavaFormat>
+                  <version>1.11.0</version>
+                  <style>GOOGLE</style>
+                </googleJavaFormat>
+
+                <replace>
+                  <name>replace some word or text with new value</name>
+                  <search>aaaa-test</search>
+                  <replacement>api-docs</replacement>
+                </replace>
+                <replaceRegex>
+                  <name>replace some word or text with new value with regex</name>
+                  <searchRegex>(^Testingwiithanydata\s+[^;\n]+)(?=;\s*$)</searchRegex>
+                  <replacement>$1\n\n</replacement>
+                </replaceRegex>
+              </java>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

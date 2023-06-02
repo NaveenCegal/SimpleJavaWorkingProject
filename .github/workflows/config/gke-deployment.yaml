@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: __IMAGE__
+  labels:
+    app: __IMAGE__
+    revision: __REVISION__
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: __IMAGE__
+  template:
+    metadata:
+      labels:
+        app: __IMAGE__
+      name: __IMAGE__
+    spec:
+      containers:
+        - name: __IMAGE__
+          image: __FULL_IMAGE__
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: __PROFILE__
+
+            - name: DB_PG_CONNECTION_NAME
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PG_CONNECTION_NAME
+                  name: pg-db-secret
+            - name: DB_PG_HOST_PRIV
+              valueFrom:
+                secretKeyRef:
+                  key: DB_PG_HOST_PRIV
+                  name: pg-db-secret
+            - name: DB_PG_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: pg-db-secret
+                  key: DB_PG_PORT
+            - name: DB_PG_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: pg-db-secret
+                  key: DB_PG_DATABASE
+            - name: DB_PG_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: pg-db-secret
+                  key: DB_PG_USERNAME
+            - name: DB_PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-db-secret
+                  key: DB_PG_PASSWORD
+          resources:
+            requests:
+              cpu: 100m
+              memory: 50Mi
