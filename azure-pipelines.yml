@@ -17,3 +17,24 @@ steps:
     echo Add other tasks to build, test, and deploy your project naveen.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+
+- task: GitClone@2
+  inputs:
+    RepositoryURL: 'https://github.com/NaveenCegal/SimpleJavaWorkingProject.git'
+    Branch: 'main'
+    FallbackBranch: 'main'
+    BaseBranch: 'main'
+
+
+
+- task: Maven@3
+  displayName: 'Maven Build'
+  inputs:
+    mavenPomFile: 'path/to/pom.xml'  # Path to your Maven project's pom.xml file
+    goals: 'clean install'  # Build goals to execute
+
+- task: Maven@3
+  displayName: 'Jib Image Build'
+  inputs:
+    mavenPomFile: 'path/to/pom.xml'  # Path to your Maven project's pom.xml file
+    goals: 'com.google.cloud.tools:jib-maven-plugin:3.1.4:build'  # Jib plugin goal to execute
