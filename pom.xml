@@ -138,12 +138,17 @@
             <image>amazoncorretto:11</image>
           </from>
           <to>
-            <image>cipnordpool</image>
-            <tags>
-              <tag>latest</tag>
-              <tag>r_${project.version}</tag>
-            </tags>
-          </to>
+      <image>docker.io/naveen538/naveensamplejavaazure</image>
+      <auth>
+        <username>naveen538.k@gmail.com</username>
+        <password>Namo@082020</password>
+      </auth>
+      <tags>
+        <tag>latest</tag>
+        <tag>r_${project.version}</tag>
+      </tags>
+    </to>
+          
           <container>
             <ports>
               <port>8080</port>
