@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: naveensamplejavaazure
+  labels:
+    app: naveensamplejavaazure
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: naveensamplejavaazure
+  template:
+    metadata:
+      labels:
+        app: naveensamplejavaazure
+    spec:
+      containers:
+        - name: naveensamplejavaazure
+          image: naveen538/naveensamplejavaazure:latest
+          ports:
+            - containerPort: 8080
