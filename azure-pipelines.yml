@@ -17,3 +17,20 @@ steps:
     echo Add other tasks to build, test, and deploy your project naveen.
     echo See https://aka.ms/yaml
   displayName: 'Run a multi-line script'
+- checkout: self
+
+- task: Maven@3
+  displayName: 'Maven Build'
+  inputs:
+    mavenPomFile: 'pom.xml'  # Path to your Maven project's pom.xml file
+    goals: 'clean install'  # Build goals to execute
+
+- task: Maven@3
+  displayName: 'Jib Image Build'
+  inputs:
+    mavenPomFile: 'pom.xml'
+    goals: 'com.google.cloud.tools:jib-maven-plugin:3.1.4:build'
+    options: '-Djib.to.image=docker.io/naveen538/naveensamplejavaazure -Djib.auth.username=$(DOCKER_USERNAME) -Djib.auth.password=$(DOCKER_PASSWORD)'
+  env:
+    DOCKER_USERNAME: $(LocalDockerRegistry.username)  # Replace 'LocalDockerRegistry' with your Docker service connection name
+    DOCKER_PASSWORD: $(LocalDockerRegistry.password)
